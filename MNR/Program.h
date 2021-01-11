@@ -35,4 +35,8 @@ public:
 	void moveCells(int number);
 	int cellsSize() const;
 	vector<string> parseLine(int n);
+
+	int numberOfLines() const {
+		return lines.size();
+	}
 };

@@ -11,29 +11,27 @@ void Commands::addOperator(const string& line)
 	string argument;
 	vector<string> args;
 	int i = 0;
-	while (line[i] != ' ')
+	while (i < line.length() && line[i] != ' ')
 	{
-		name[i] = line[i];
+		name.push_back(line[i]);
 		i++;
 	}
 	i++;
-	while (line[i] != '\0')
+	while (i < line.length())
 	{
-		int k = 0;
-		while (line[i] != ' ')
+		while (i < line.length() && line[i] != ' ')
 		{
-			argument[k] = line[i];
-			k++;
+			argument.push_back(line[i]);
 			i++;
 		}
 		args.push_back(argument);
-		i++;
-		k = 0;
+		i++;	
 	}
 	currentProgram.addOperand(Operator(name, args));
 }
 void Commands::executeInstruction(const vector<string>& v)
 {
+	cout << "Instruction: " << v[0] << '\n';
 	if (v[0] == "ZERO")
 	{
 		mech.setValue(stoi(v[1]), 0);
@@ -57,6 +55,7 @@ void Commands::executeInstruction(const vector<string>& v)
 			currentProgram.jump(stoi(v[1]), stoi(v[2]), stoi(v[3]));
 		}
 	}
+	printMemory();
 }
 void Commands::executeCommand(const vector<string>& v)
 {
@@ -123,10 +122,12 @@ bool Commands::isItOperator(const string& op)
 
 
 }
+
 Commands::Commands(): mech(), currentProgram(), running(false),currentLine(0)
 {
-
+	currentProgram.setMachine(&mech);
 }
+
 Commands::Commands(const Commands& other)
 {
 	mech = other.mech;
@@ -153,9 +154,9 @@ void Commands::zero(int from, int to)
 	}
 }
 
-void Commands::set(int from, int to)
+void Commands::set(int cell_index, int value)
 {
-	mech.setValue(to, mech.getValue(from));
+	mech.setValue(cell_index, value);
 }
 
 void Commands::copy(int x, int y, int z)
@@ -167,7 +168,7 @@ void Commands::print(int from, int to) const
 {
 	for (int i = from; i <= to; i++)
 	{
-		cout << " Printing... " << mech.getValue(i) << " ";
+		cout << mech.getValue(i) << " ";
 	}
 }
 
@@ -179,6 +180,7 @@ void Commands::load(const string& path)
 		running = false;
 	}
 	currentProgram.readFromFile(path);
+	
 }
 
 void Commands::quote(const string& q)
@@ -205,7 +207,7 @@ void Commands::run()
 {
 	if (running)
 	{
-		currentLine = 0;
+		currentProgram.setCurrentLine(0);
 	}
 	else
 	{
@@ -213,12 +215,18 @@ void Commands::run()
 		currentProgram.setCurrentLine(0);
 		while (running)
 		{
-			if (currentProgram.getCurrentLine() == -1)
+			
+
+			if (currentProgram.getCurrentLine() == -1 || currentProgram.getCurrentLine() >= currentProgram.numberOfLines())
 			{
+				running = false;
 				return;
 			}
 
 			vector<string> v = currentProgram.parseLine(currentProgram.getCurrentLine());
+			
+			
+			
 			if (v.empty())
 			{
 				running = false;
@@ -227,12 +235,15 @@ void Commands::run()
 			if (v[0][0] == '/')
 			{
 				executeCommand(v);
+				
 			}
 			else
 			{
 				executeInstruction(v);
+				
 			}
 			currentProgram.moveToNextLine();
+			
 		}
 
 	}
@@ -246,12 +257,21 @@ void Commands::add(const string& filename)
 	vector<string> operators;
 
 	Program  p;
+	p.setMachine(&mech);
 
 	p.readFromFile(filename);
+
+	
 	p.moveCells(currentProgram.cellsSize());
+	
+	
+
+	int i = 0;
+	
 	while (!in.eof())
 	{
-		int i = 0;
+		
+
 		getline(in, line);
 
 		operators.push_back(line);
@@ -263,4 +283,9 @@ void Commands::add(const string& filename)
 	{
 		addOperator(operators[j]);
 	}
+}
+
+void Commands::printMemory() const
+{
+	mech.printMemory();
 }

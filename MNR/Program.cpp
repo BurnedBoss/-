@@ -1,6 +1,7 @@
 #include "Program.h"
 #include<iostream>
 #include<sstream>
+#include<stdexcept>
 
 using std::cout;
 using std::endl;
@@ -15,7 +16,7 @@ Program::Program(const Program& other)
 	operators = other.operators;
 	setMachine(other.machine);
 	currentLine = other.currentLine;
-	lines = lines;
+	lines = other.lines;
 	firstCell = other.firstCell;
 	lastCell = other.lastCell;
 }
@@ -27,7 +28,7 @@ Program& Program::operator=(const Program& other)
 		operators = other.operators;
 		setMachine(other.machine);
 		currentLine = other.currentLine;
-		lines = lines;
+		lines = other.lines;
 		firstCell = other.firstCell;
 		lastCell = other.lastCell;
 	}
@@ -100,6 +101,7 @@ void Program::readFromFile(const string& path)
 	ifstream in;
 	in.open(path);
 	string curr;
+
 	while (!in.eof())
 	{
 		getline(in, curr);
@@ -135,12 +137,18 @@ vector<string> Program::parseLine(int n)
 {
 	vector<string> result;
 	string curr = lines[n];
+
+	
+
 	stringstream s(curr);
 
 	while (!s.str().empty())
 	{
 		string arg;
 		s >> arg;
+		if (arg == "") {
+			break;
+		}
 		result.push_back(arg);
 	}
 

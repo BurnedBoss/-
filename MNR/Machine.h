@@ -15,4 +15,5 @@ public:
 	void moveCells(int number);
 	int size() const;
 	void copy(int x, int y, int z);
+	void printMemory() const ;
 };

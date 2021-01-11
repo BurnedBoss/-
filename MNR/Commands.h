@@ -24,7 +24,7 @@ public:
 	Commands(const Commands& other);
 	Commands& operator= (const Commands& other);
 	void zero(int from, int to);
-	void set(int from, int to);
+	void set(int cell_index, int value);
 	void copy(int x, int y, int z);
 	void print(int from, int to) const;
 	void load(const string& path);
@@ -33,4 +33,5 @@ public:
 	void comment(const string& com);
 	void run();
 	void add(const string& filename);
+	void printMemory() const;
 };

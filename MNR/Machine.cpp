@@ -1,8 +1,10 @@
+#include<iostream>
 #include "Machine.h"
 #include"Memory.h"
 #include"Cell.h"
 
-
+using std::cout;
+using std::endl;
 
 void Machine::add(const Cell& cell)
 {
@@ -36,10 +38,10 @@ int Machine::getValue(int n) const
 void Machine::moveCells(int number)
 {
 	Vector<Cell> other = cells;
-	cells.clear();
+	cells = Vector<Cell>();
 	for (int i = 0; i < number; i++)
 	{
-		cells[i + number].setValue(other[i].getValue());
+		setValue(i + number, other[i+number].getValue());
 	}
 }
 
@@ -54,4 +56,14 @@ void Machine::copy(int x, int y, int z)
 	{
 		cells[y + i] = cells[x + i];
 	}
+}
+
+void Machine::printMemory() const
+{
+	cout << "Memory: " << endl;
+	for (int i = 0; i < cells.size(); i++)
+	{
+		cout << i << ": "<<cells[i].getValue()<< endl;
+	}
+	cout << endl;
 }

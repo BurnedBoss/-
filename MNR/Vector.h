@@ -21,13 +21,12 @@ public:
 	void push_back(const T& element);
 	const T& operator [] (int index) const;
 	T& operator [] (int index);
-	void clear();
 };
 
 template<typename T>
 inline void Vector<T> ::   resize()
 {
-	this->capacity = 2 * capacity;
+	this->capacity = 2 * this->capacity;
 	T* biggerMemory = new T[capacity];
 	for (int i = 0; i < capacity; i++)
 	{
@@ -52,7 +51,7 @@ inline Vector<T>::Vector(const Vector& other)
 	this->memory = new T[capacity];
 	for (int i = 0; i < this->count; i++)
 	{
-		this->memory[0] = other.memory[0];
+		this->memory[i] = other.memory[i];
 	}
 }
 
@@ -64,10 +63,10 @@ inline Vector<T>& Vector<T>::operator=(const Vector<T>& other)
 		delete[] memory;
 		this->capacity = other.capacity;
 		this->count = other.count;
-		this->memory = new int[capacity];
+		this->memory = new T[capacity];
 		for (int i = 0; i < this->count; i++)
 		{
-			this->memory[0] = other.memory[0];
+			this->memory[i] = other.memory[i];
 		}
 	}
 	return *this;
@@ -114,12 +113,4 @@ inline T& Vector<T>::operator[](int index)
 		out_of_range("Invalid index");
 	}
 	return memory[index];
-}
-
-template<typename T>
-inline void Vector<T>::clear()
-{
-	delete[] memory;
-	Vector();
-	
 }
